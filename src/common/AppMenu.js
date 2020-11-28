@@ -1,16 +1,29 @@
-import React, { useState } from 'react'
+import React, { useReducer } from 'react'
 import { Menu, Button } from 'semantic-ui-react'
-import Login from '../authentication/Login';
+import Auth from '../authentication/Auth';
+import appMenuReducer from './AppMenuReducer'
 
 export default function AppMenu() {
-  const [loginOpen, setLoginOpen] = useState(false);
+  const [state, dispatch] = useReducer(appMenuReducer, {
+    user: {},
+    authenticated: false,
+    authOpen: false
+  });
 
-  function handleOpenLogin() {
-    setLoginOpen(true);
+  function handleOpenAuth() {
+    dispatch({type: 'AUTHENTICATING'});
   }
 
-  function handleLoginClose() {
-    setLoginOpen(false);
+  function handleAuthClose() {
+    dispatch({type: 'UNAUTHENTICATED'});
+  }
+
+  function handleLogin(user) {
+    dispatch({type: 'AUTHENTICATED', payload: {user: user}});
+  }
+
+  function handleLogout() {
+    dispatch({type: 'UNAUTHENTICATED'});
   }
 
   return (
@@ -21,22 +34,37 @@ export default function AppMenu() {
         />
 
         <Menu.Menu position='right'>
+          {!state.authenticated && 
           <Menu.Item>
-            <Button primary 
-              onClick={handleOpenLogin}
-            >
+            <Button primary onClick={handleOpenAuth}>
               Login
             </Button>
           </Menu.Item>
+          }
+          
+          {state.authenticated &&
+            <Menu.Item name={state.user.firstName + ' ' + state.user.lastName} />
+          }
+
+          {state.authenticated &&
+            <Menu.Item>
+              <Button primary onClick={handleLogout}>
+                Logout
+              </Button>
+            </Menu.Item>
+          }
         </Menu.Menu>
       </Menu>
 
-      {loginOpen && 
-        <Login
-          open={loginOpen}
-          onClose={handleLoginClose}
+      {state.authOpen && 
+        <Auth
+          open={state.authOpen}
+          onClose={handleAuthClose}
+          onLogin={handleLogin}
         />
       }
+
+      
     </div>
   )
 }
