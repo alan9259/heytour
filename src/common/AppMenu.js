@@ -63,8 +63,6 @@ export default function AppMenu() {
           onLogin={handleLogin}
         />
       }
-
-      
     </div>
   )
 }
