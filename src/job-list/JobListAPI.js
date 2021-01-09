@@ -1,5 +1,5 @@
 import { useState, useEffect, useReducer, useRef } from 'react';
-import JobData from "./data.json";
+import axios from 'axios'
 
 function jobAPIReducer(state, action) {
   switch (action.type) {
@@ -30,8 +30,8 @@ function jobAPIReducer(state, action) {
 
 export function useJobList(initialFilter) {
   const didMountRef = useRef(true);
-
-  const data = JobData
+  const url = 'https://localhost:44350/api/jobs'
+  //const data = JobData
   const [filter, setFilter] = useState(null);
 
   const [state, dispatch] = useReducer(jobAPIReducer, {
@@ -41,22 +41,62 @@ export function useJobList(initialFilter) {
   });
 
   useEffect(() => {
+    const getJobs = async() => {
+      dispatch({ type: 'FETCH_INIT' });
 
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
+      try {
+        const response = await axios.get(url);
+        console.log(response);
 
-    async function getJobs() {
-      dispatch({type: "FETCH_INIT"});
-      await sleep(600);
-      dispatch({type: "FETCH_SUCCESS", payload: data});
-
-    }
-
+        dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+      } catch (error) {
+        console.log(error);
+        dispatch({ type: 'FETCH_FAILURE' });
+      }
+    };
+  
     if (didMountRef.current) {
       getJobs();
     }
   }, [filter]);
 
   return [state, setFilter];
+}
+
+
+export function useJobDelete() {
+  const didMountRef = useRef(false);
+  const url = 'https://localhost:44350/api/jobs/'
+
+  const [id, setId] = useState(null);
+
+  const [state, dispatch] = useReducer(jobAPIReducer, {
+    isLoading: false,
+    isError: false,
+    data: null
+  });
+
+  useEffect(() => {
+    const deleteJob = async() => {
+      dispatch({ type: 'FETCH_INIT' });
+
+      try {
+        const response = await axios.delete(url+id);
+        console.log(response);
+
+        dispatch({ type: 'FETCH_SUCCESS', payload: id });
+      } catch (error) {
+        console.log(error);
+        dispatch({ type: 'FETCH_FAILURE' });
+      }
+    };
+  
+    if (didMountRef.current && id) {
+      deleteJob();
+    } else {
+      didMountRef.current = true
+    }
+  }, [id]);
+
+  return [state, setId];
 }

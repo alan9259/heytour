@@ -36,8 +36,8 @@ export default function JobListContent(props) {
           <Button color='google plus'>
             <Icon name='heart' /> Save
           </Button>
-          <Button color='instagram'>
-            <Icon name='plus' /> Apply
+          <Button color='instagram' onClick={() => props.onDelete(props.job.id)}>
+            <Icon name='plus' /> Delete
           </Button>
           </div>
         </Card.Content>
