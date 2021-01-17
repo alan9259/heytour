@@ -100,3 +100,93 @@ export function useJobDelete() {
 
   return [state, setId];
 }
+
+export function useJobPost() {
+  const didMountRef = useRef(false);
+  const url = 'https://localhost:44350/api/jobs/'
+
+  const [job, setJob] = useState(null);
+
+  const [state, dispatch] = useReducer(jobAPIReducer, {
+    isLoading: false,
+    isError: false,
+    data: null
+  });
+
+  useEffect(() => {
+    const postJob = async() => {
+      dispatch({ type: 'FETCH_INIT' });
+
+      try {
+        const response = await axios.post(url, job) 
+        console.log(response);
+
+        dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+      } catch (error) {
+        console.log(error);
+        dispatch({ type: 'FETCH_FAILURE' });
+      }
+    };
+  
+    if (didMountRef.current && job) {
+      postJob();
+    } else {
+      didMountRef.current = true
+    }
+  }, [job]);
+
+  return [state, setJob];
+}
+
+export function useJobSave() {
+  const didMountRef = useRef(false);
+  const url = 'https://localhost:44350/api/jobs/'
+
+  const [job, setJob] = useState(null);
+
+  const [state, dispatch] = useReducer(jobAPIReducer, {
+    isLoading: false,
+    isError: false,
+    data: null
+  });
+
+  useEffect(() => {
+    const postJob = async() => {
+      dispatch({ type: 'FETCH_INIT' });
+
+      try {
+        const response = await axios.post(url, job) 
+        console.log(response);
+
+        dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+      } catch (error) {
+        console.log(error);
+        dispatch({ type: 'FETCH_FAILURE' });
+      }
+    };
+
+    const putJob = async() => {
+      dispatch({ type: 'FETCH_INIT' });
+
+      try {
+        const response = await axios.put(url+job.id, job);
+        console.log(response);
+
+        dispatch({ type: 'FETCH_SUCCESS', payload: job });
+      } catch (error) {
+        console.log(error);
+        dispatch({ type: 'FETCH_FAILURE' });
+      }
+    };
+  
+    if (didMountRef.current && job && job.id) {
+      putJob();
+    } else if (didMountRef.current && job) {
+      postJob();
+    } else {
+      didMountRef.current = true
+    }
+  }, [job]);
+
+  return [state, setJob];
+}

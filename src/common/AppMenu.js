@@ -32,11 +32,11 @@ export default function AppMenu() {
         <Menu.Item
             name='Heytour'
         />
-
+              
         <Menu.Menu position='right'>
           {!state.authenticated && 
           <Menu.Item>
-            <Button primary onClick={handleOpenAuth}>
+            <Button color='instagram' onClick={handleOpenAuth}>
               Login
             </Button>
           </Menu.Item>
@@ -48,7 +48,7 @@ export default function AppMenu() {
 
           {state.authenticated &&
             <Menu.Item>
-              <Button primary onClick={handleLogout}>
+              <Button color='instagram' onClick={handleLogout}>
                 Logout
               </Button>
             </Menu.Item>

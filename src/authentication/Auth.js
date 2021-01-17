@@ -20,18 +20,19 @@ export default function Auth(props) {
     if (didMountRef.current) {
       if (login.isError) {
         dispatch({type:'AUTH_ERROR'});
-      } else if (login.isLoading) {
-        dispatch({type:'AUTH_LOADING'});
       } else {
         props.onLogin(login.data);
       }
     } else {
       didMountRef.current = true;
     };
-  }, [login]);
+    
+  }, [login]);// eslint-disable-line react-hooks/exhaustive-deps
 
   function handleLogin() {
-     const user = {
+    dispatch({type:'AUTH_LOADING'});
+
+    const user = {
       userName: state.userName,
       password: state.password
     };
@@ -54,7 +55,7 @@ export default function Auth(props) {
         <Form onSubmit={handleLogin} loading={state.isLoading} error={state.isError}>
           <Form.Input required name='userName' label='User Name' value={state.userName} placeholder='User Name' onChange={handleChange} />
           <Form.Input required name='password' label='Password'  value={state.password} placeholder='Password' type='password' onChange={handleChange} />
-          <Button onClick={props.onClose}>Close</Button>
+          <Button type='button' onClick={props.onClose}>Close</Button>
           <Button type='submit'>Login</Button>
           {state.isError && 
             <Message

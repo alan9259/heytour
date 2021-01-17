@@ -33,11 +33,11 @@ export default function JobListContent(props) {
 
         <Card.Content extra>
           <div className='ui two buttons'>
-          <Button color='google plus'>
-            <Icon name='heart' /> Save
+          <Button color='google plus' onClick={() => props.onEdit(props.job)}>
+            <Icon name='edit' /> Edit
           </Button>
           <Button color='instagram' onClick={() => props.onDelete(props.job.id)}>
-            <Icon name='plus' /> Delete
+            <Icon name='minus' /> Delete
           </Button>
           </div>
         </Card.Content>
